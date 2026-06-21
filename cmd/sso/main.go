@@ -4,8 +4,9 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/Archiker-715/grpc/internal/app"
 	"github.com/Archiker-715/grpc/internal/config"
-	slogpretty "github.com/Archiker-715/grpc/internal/config/lib/logger/handlers/slowpretty"
+	slogpretty "github.com/Archiker-715/grpc/internal/lib/logger/handlers/slogpretty"
 )
 
 const (
@@ -20,6 +21,10 @@ func main() {
 	log := initLogger(cfg.Env)
 
 	log.Info("starting app", slog.String("env", cfg.Env))
+
+	application := app.New(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
+
+	application.GRPCSrv.MustRun()
 }
 
 func initLogger(env string) *slog.Logger {
